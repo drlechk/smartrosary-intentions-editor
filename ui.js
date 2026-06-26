@@ -98,6 +98,7 @@
 	  let bleDevice = null;
   let bleIntentsChar = null;
   let bleInfoCtrlChar = null;
+  let bleInfoSettingsChar = null;
   let bleInfoIntentionsChar = null;
   let bleInfoIntentEntryChar = null;
   let bleStatusChar = null;
@@ -708,13 +709,27 @@
 			    if (!bleDevice?.gatt?.connected) return { deviceName: null, firmware: null };
 			    const deviceName = bleDevice.name ? String(bleDevice.name) : null;
 			    let firmware = null;
+
 			    try {
-			      const svc = await bleDevice.gatt.getPrimaryService('device_information');
-			      const fwChar = await svc.getCharacteristic('firmware_revision_string');
-			      const dv = await fwChar.readValue();
-			      firmware = new TextDecoder().decode(dv.buffer).replace(/\0+$/g, '').trim() || null;
-			    } catch {
-			      firmware = null;
+			      if (bleInfoSettingsChar) {
+			        const dv = await bleInfoSettingsChar.readValue();
+			        const text = new TextDecoder().decode(dv.buffer).replace(/\0+$/g, '').trim();
+			        const json = JSON.parse(text);
+			        if (json.fwVersion) firmware = json.fwVersion;
+			      }
+			    } catch (e) {
+			      console.warn('Failed reading fwVersion from INFO_SETTINGS:', e);
+			    }
+
+			    if (!firmware) {
+			      try {
+			        const svc = await bleDevice.gatt.getPrimaryService('device_information');
+			        const fwChar = await svc.getCharacteristic('firmware_revision_string');
+			        const dv = await fwChar.readValue();
+			        firmware = new TextDecoder().decode(dv.buffer).replace(/\0+$/g, '').trim() || null;
+			      } catch {
+			        // fallback failed
+			      }
 			    }
 			    return { deviceName, firmware };
 			  }
@@ -2111,13 +2126,15 @@
   const INTENTS_CHAR_UUID  = '12345678-1234-5678-1234-56789abcde10';
   const STATUS_CHAR_UUID   = '12345678-1234-5678-1234-56789abcdef2';
   const INFO_CTRL_UUID     = 'b8a7a0e2-1a5d-4c1e-9d93-2c9e2b9e10ff';
+  const INFO_SETTINGS_UUID = 'b8a7a0e2-1a5d-4c1e-9d93-2c9e2b9e1002';
   const INFO_INTENTIONS_UUID    = 'b8a7a0e2-1a5d-4c1e-9d93-2c9e2b9e1010';
   const INFO_INTENT_ENTRY_UUID  = 'b8a7a0e2-1a5d-4c1e-9d93-2c9e2b9e1011';
 
   bleDevice = null;
 		  bleIntentsChar = null;
 		  bleInfoCtrlChar = null;
-bleInfoIntentionsChar = null;
+		  bleInfoSettingsChar = null;
+		  bleInfoIntentionsChar = null;
 		  bleInfoIntentEntryChar = null;
 		  bleStatusChar = null;
 		  bleReady = true;
@@ -2227,6 +2244,7 @@ bleInfoIntentionsChar = null;
 
 	    bleIntentsChar = await svc.getCharacteristic(INTENTS_CHAR_UUID);
 	    bleInfoCtrlChar = await svc.getCharacteristic(INFO_CTRL_UUID);
+	    try { bleInfoSettingsChar = await svc.getCharacteristic(INFO_SETTINGS_UUID); } catch { bleInfoSettingsChar = null; }
 	    bleInfoIntentionsChar = await svc.getCharacteristic(INFO_INTENTIONS_UUID);
 	    bleInfoIntentEntryChar = await svc.getCharacteristic(INFO_INTENT_ENTRY_UUID);
 	    try {
