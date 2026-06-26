@@ -79,7 +79,38 @@
 	      .header-controls { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
 	      #language { background: #0f1720; border: 1px solid #1f2b3a; color: #eaf0f6; padding: 6px 10px; border-radius: 10px; font-weight: 600; }
 
-	      .toolbar-wrap { position: sticky; top: 0; z-index: 1000; background: var(--primary-bg); }
+	  	    .fw-update-banner {
+	      width: min(980px, 100%);
+	      flex-wrap: wrap;
+	      gap: 8px;
+	      align-items: center;
+	      justify-content: center;
+	      padding: 8px 10px;
+	      border-radius: 10px;
+	      background: rgba(13, 32, 48, 0.85);
+	      border: 1px solid rgba(29, 53, 81, 0.95);
+	      color: #cde3ff;
+	      font-size: 12px;
+	      line-height: 1.25;
+	      margin: 0 auto;
+	    }
+	    
+	    .fw-update-banner:not([hidden]) {
+	      display: flex;
+	    }
+	    
+	    .fw-update-banner a {
+	      color: #cfe4ff;
+	      text-decoration: underline;
+	      text-underline-offset: 2px;
+	      font-weight: 600;
+	    }
+	    
+	    .fw-update-banner a:hover {
+	      text-decoration-thickness: 2px;
+	    }
+	    
+	    .toolbar-wrap { position: sticky; top: 0; z-index: 1000; background: var(--primary-bg); }
 	      .toolbar-sticky { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 12px; max-width: 1400px; margin: 0 auto; }
 	      .toolbar-top { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
 	      .toolbar-bottom { display: flex; gap: 6px; align-items: center; justify-content: center; flex-direction: column; width: 100%; }
@@ -875,8 +906,13 @@
 		          <div id="status" class="toolbar-status">Brak pliku. Dodaj wpisy albo wgraj .bin/.json.</div>
 	        </div>
 	      </div>
-	      <div id="globalProg" hidden class="toolbar-progress"><div class="bar"></div></div>
 	      </div>
+	      <div id="fwUpdateBanner" class="fw-update-banner" hidden>
+	        <span id="fwUpdateText"></span>
+	        <a id="fwUpdateLink" href="https://drlechk.github.io/smartrosary-web-installer/" target="_blank" rel="noreferrer">Aktualizuj</a>
+	      </div>
+	      <div id="globalProg" hidden class="toolbar-progress"><div class="bar"></div></div>
+	    </div>
 	    <main>
 			      <div class="card" id="overviewCard">
 				        <header><h2 id="dataSourceTitle">Podsumowanie</h2></header>
@@ -1021,6 +1057,7 @@
     <script src="nvs.js"></script>
     <script src="vendor/hypher.js"></script>
     <script src="vendor/hyphenation.pl.js"></script>
+    <script src="firmware-update.js"></script>
     <script src="ui.js"></script>
   </body>
   </html>

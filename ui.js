@@ -346,6 +346,8 @@
 		      statusEraseFailed: 'Nie udało się wymazać partycji (zobacz konsolę).',
 		      statusSchedSaved: 'Zapisano harmonogram intencji.',
 		      statusSchedSaveFailed: 'Nie udało się zapisać harmonogramu (zobacz konsolę).',
+		      fwUpdateAvailable: ({ current, latest }) => `Dostępna aktualizacja oprogramowania: ${current} → ${latest}`,
+		      fwUpdateOpenInstaller: 'Aktualizuj',
 		    },
 			    en: {
 			      title: 'SmartRosary — Intentions',
@@ -465,6 +467,8 @@
 		      statusEraseFailed: 'Failed to erase partition (see console).',
 		      statusSchedSaved: 'Saved intentions scheduler.',
 		      statusSchedSaveFailed: 'Failed to save scheduler (see console).',
+		      fwUpdateAvailable: ({ current, latest }) => `Firmware update available: ${current} → ${latest}`,
+		      fwUpdateOpenInstaller: 'Update',
 		    },
 			    de: {
 			      title: 'SmartRosary — Anliegen',
@@ -584,6 +588,8 @@
 		      statusEraseFailed: 'Partition konnte nicht gelöscht werden (siehe Konsole).',
 		      statusSchedSaved: 'Anliegen-Planer gespeichert.',
 		      statusSchedSaveFailed: 'Planer konnte nicht gespeichert werden (siehe Konsole).',
+		      fwUpdateAvailable: ({ current, latest }) => `Firmware-Update verfügbar: ${current} → ${latest}`,
+		      fwUpdateOpenInstaller: 'Aktualisieren',
 		    },
 		  };
 
@@ -1984,10 +1990,16 @@
 	    if (!overflow) {
 	      setDescValueProgrammatically(lines.join('\n'));
 	    } else {
-	      // Keep the full text in descsSource, but write only the fitted lines to the device field
-	      // so the on-device label doesn't clip mid-word/line.
-	      setDescValueProgrammatically(lines.join('\n'));
-	      setPreviewHint(tr('previewOverflowSourceKept'), 'danger');
+	      if (allowOverflow) {
+	        const extraLines = wrapTokensSimple(ctx, remainingTokens, FONT_DESC, DEVICE_W - 2 * marginPx, getEditorLang());
+	        const allLines = [...lines, ...extraLines];
+	        setDescValueProgrammatically(allLines.join('\n'));
+	      } else {
+	        // Keep the full text in descsSource, but write only the fitted lines to the device field
+	        // so the on-device label doesn't clip mid-word/line.
+	        setDescValueProgrammatically(lines.join('\n'));
+	        setPreviewHint(tr('previewOverflowSourceKept'), 'danger');
+	      }
 	    }
     schedulePreviewUsage();
     scheduleDevicePreview();
@@ -2018,6 +2030,12 @@
 				    applyUiLang();
 				    scheduleDevicePreview();
 				  });
+	  if (allowOverflowEl) allowOverflowEl.addEventListener('change', (e) => {
+	    allowOverflow = e.target.checked;
+	    try { localStorage.setItem('allowOverflow', String(allowOverflow)); } catch {}
+	    scheduleDevicePreview();
+	    schedulePreviewUsage();
+	  });
 	  if (hyphenAggression) hyphenAggression.addEventListener('input', () => { updateHyphenAggressionUI(); scheduleDevicePreview(); });
 	  if (btnSuggestBreaks) btnSuggestBreaks.addEventListener('click', suggestLineBreaks);
 	  if (btnClearBreaks) btnClearBreaks.addEventListener('click', clearLineBreaks);
@@ -2031,6 +2049,18 @@
     updateHyphenAggressionUI();
   })();
 
+	  // Init allow overflow
+	  (function initAllowOverflow() {
+	    if (!allowOverflowEl) return;
+	    const saved = localStorage.getItem('allowOverflow');
+	    if (saved !== null) {
+	      allowOverflowEl.checked = saved === 'true';
+	    } else {
+	      allowOverflowEl.checked = true;
+	    }
+	    allowOverflow = allowOverflowEl.checked;
+	  })();
+
 			  // Init language (UI + word breaking)
 				  (function initEditorLang() {
 				    if (!languageEl) return;
@@ -2041,7 +2071,6 @@
 				    applyUiLang();
 				  })();
 
-		  // Allow overflow is always enabled (export full source text even when preview overflows).
 
 		  ensureFontsLoaded().then(() => scheduleDevicePreview());
 		  window.addEventListener('resize', scheduleDevicePreview);
@@ -2070,7 +2099,7 @@
   bleDevice = null;
 		  bleIntentsChar = null;
 		  bleInfoCtrlChar = null;
-		  bleInfoIntentionsChar = null;
+bleInfoIntentionsChar = null;
 		  bleInfoIntentEntryChar = null;
 		  bleStatusChar = null;
 		  bleReady = true;
@@ -2199,7 +2228,10 @@
 		      readDeviceInformation()
 		        .then(({ deviceName, firmware }) => {
 		          if (deviceName) overviewDeviceName = deviceName;
-		          if (firmware) overviewFirmware = firmware;
+		          if (firmware) {
+		            overviewFirmware = firmware;
+		            scheduleFwUpdateCheck(firmware);
+		          }
 		          renderOverviewPills();
 		        })
 		        .catch(() => {});
@@ -2330,29 +2362,47 @@
 
 	    for (let idx = 0; idx < count; idx++) {
 	      setGlobalProgress(Math.round((idx / Math.max(1, count)) * 100));
-	      bleReady = false;
-	      await bleInfoIntentEntryChar.writeValue(Uint8Array.of(idx & 0xFF, (idx >> 8) & 0xFF));
-	      await bleWaitReady();
-
-	      const deadline = Date.now() + 1500;
-	      // Poll until the cached entry matches requested index.
-	      // LVGL updates are async and can arrive slightly after the ready signal.
+	      let fullDesc = '';
+	      let currentOffset = 0;
 	      // eslint-disable-next-line no-constant-condition
 	      while (true) {
-	        const entryText = decodeBleText(await bleInfoIntentEntryChar.readValue());
-	        const entry = parseBleJson(entryText);
-	        if (entry?.requireConsent) throw new Error('Device requires consent. Tap "Allow" on the device, then try again.');
-	        if (entry?.present && (entry?.index | 0) === idx) {
-	          titles.push(String(entry.title ?? ''));
-	          descs.push(String(entry.desc ?? ''));
-	          schedStarts.push(Number(entry.start) || 0);
-	          schedSets.push(Number(entry.set) || 0);
-	          schedParts.push(Number(entry.part) || 0);
-	          break;
+	        bleReady = false;
+	        await bleInfoIntentEntryChar.writeValue(Uint8Array.of(idx & 0xFF, (idx >> 8) & 0xFF, currentOffset & 0xFF, (currentOffset >> 8) & 0xFF));
+	        await bleWaitReady();
+
+	        const deadline = Date.now() + 1500;
+	        // Poll until the cached entry matches requested index and offset.
+	        // eslint-disable-next-line no-constant-condition
+	        while (true) {
+	          const entryText = decodeBleText(await bleInfoIntentEntryChar.readValue());
+	          const entry = parseBleJson(entryText);
+	          if (entry?.requireConsent) throw new Error('Device requires consent. Tap "Allow" on the device, then try again.');
+	          
+	          // Firmware will return desc_offset if it supports chunking, or undefined if legacy.
+	          const returnedOffset = entry?.desc_offset | 0;
+	          if (entry?.present && (entry?.index | 0) === idx && returnedOffset === currentOffset) {
+	            const chunk = String(entry.desc ?? '');
+	            fullDesc += chunk;
+	            currentOffset += new TextEncoder().encode(chunk).length;
+	            
+	            const total = entry.desc_total || 0;
+	            if (!total || currentOffset >= total || chunk.length === 0) {
+	              titles.push(String(entry.title ?? ''));
+	              descs.push(fullDesc);
+	              schedStarts.push(Number(entry.start) || 0);
+	              schedSets.push(Number(entry.set) || 0);
+	              schedParts.push(Number(entry.part) || 0);
+	              break; // Finished this intention
+	            } else {
+	              break; // Need next chunk, break inner loop to write next offset
+	            }
+	          }
+	          if (Date.now() > deadline) throw new Error(`Timed out waiting for entry ${idx} at offset ${currentOffset}.`);
+	          // eslint-disable-next-line no-await-in-loop
+	          await new Promise((r) => setTimeout(r, 30));
 	        }
-	        if (Date.now() > deadline) throw new Error(`Timed out waiting for entry ${idx}.`);
-	        // eslint-disable-next-line no-await-in-loop
-	        await new Promise((r) => setTimeout(r, 30));
+	        
+	        if (descs.length > idx) break; // If we fully pushed this intention, break outer loop
 	      }
 	    }
 	    setGlobalProgress(100);
@@ -2558,4 +2608,98 @@
 	      }
 	    });
 	  }
+	  let fwUpdateState = null;
+	  let fwLastDeviceVersion = null;
+	  let fwPendingDeviceVersion = null;
+	  let fwCheckInFlight = false;
+
+	  function renderFwUpdateBanner() {
+	    const banner = document.getElementById('fwUpdateBanner');
+	    if (!banner) return;
+	    if (!fwUpdateState) {
+	      banner.hidden = true;
+	      return;
+	    }
+
+	    const textEl = document.getElementById('fwUpdateText');
+	    const linkEl = document.getElementById('fwUpdateLink');
+	    const current = fwUpdateState.currentVersion;
+	    const latest = fwUpdateState.latestVersion;
+
+	    const msg = typeof tr('fwUpdateAvailable') === 'function'
+	      ? tr('fwUpdateAvailable')({ current, latest })
+	      : (tr('fwUpdateAvailable') || `Firmware update available: ${current} → ${latest}`);
+
+	    if (textEl) textEl.textContent = msg;
+	    if (linkEl) {
+	      linkEl.href = fwUpdateState.installerUrl;
+	      linkEl.textContent = tr('fwUpdateOpenInstaller') || 'Update';
+	      linkEl.title = tr('fwUpdateOpenInstaller') || 'Update';
+	    }
+	    banner.hidden = false;
+	  }
+
+	  function setFwUpdateBanner({ currentVersion, latestVersion, installerUrl }) {
+	    fwUpdateState = { currentVersion, latestVersion, installerUrl };
+	    renderFwUpdateBanner();
+	  }
+
+	  function clearFwUpdateBanner() {
+	    fwUpdateState = null;
+	    renderFwUpdateBanner();
+	  }
+
+	  async function runFwUpdateCheck(deviceFwVersionRaw) {
+	    if (typeof getInstallerUrl !== 'function') return; // firmware-update.js not loaded
+	    const installerUrl = getInstallerUrl();
+	    const current = normalizeVersionString(deviceFwVersionRaw);
+	    if (!current) {
+	      try { clearFwUpdateBanner(); } catch {}
+	      return;
+	    }
+
+	    try {
+	      const { version: latest } = await getLatestFirmwareVersion();
+	      if (latest && isUpdateAvailable(current, latest)) {
+	        setFwUpdateBanner({ currentVersion: current, latestVersion: latest, installerUrl });
+	      } else {
+	        clearFwUpdateBanner();
+	      }
+	    } catch (err) {
+	      console.warn('[fw] update check failed', err?.message || err);
+	    }
+	  }
+
+	  window.scheduleFwUpdateCheck = function scheduleFwUpdateCheck(deviceFwVersionRaw) {
+	    if (typeof normalizeVersionString !== 'function') return;
+	    const current = normalizeVersionString(deviceFwVersionRaw);
+	    if (!current) {
+	      fwLastDeviceVersion = null;
+	      fwPendingDeviceVersion = null;
+	      try { clearFwUpdateBanner(); } catch {}
+	      return;
+	    }
+	    if (current === fwLastDeviceVersion) return;
+	    fwLastDeviceVersion = current;
+
+	    if (fwCheckInFlight) {
+	      fwPendingDeviceVersion = current;
+	      return;
+	    }
+
+	    fwCheckInFlight = true;
+	    (async () => {
+	      let next = current;
+	      try {
+	        while (next) {
+	          fwPendingDeviceVersion = null;
+	          await runFwUpdateCheck(next);
+	          next = fwPendingDeviceVersion;
+	        }
+	      } finally {
+	        fwCheckInFlight = false;
+	      }
+	    })();
+	  }
+
 		})();
