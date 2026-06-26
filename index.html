@@ -109,6 +109,16 @@
 	    .fw-update-banner a:hover {
 	      text-decoration-thickness: 2px;
 	    }
+
+	    .page-footer { padding: 12px; text-align: center; }
+	    .deploy-info {
+	      font-size: 10px;
+	      letter-spacing: 0.2px;
+	      color: var(--muted);
+	      opacity: 0.8;
+	      pointer-events: none;
+	      white-space: nowrap;
+	    }
 	    
 	    .toolbar-wrap { position: sticky; top: 0; z-index: 1000; background: var(--primary-bg); }
 	      .toolbar-sticky { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 12px; max-width: 1400px; margin: 0 auto; }
@@ -1053,6 +1063,10 @@
 			      </div>
 
 	    </main>
+
+	    <footer id="pageFooter" class="page-footer">
+	      <div id="deployInfo" class="deploy-info"></div>
+	    </footer>
 
     <script src="nvs.js"></script>
     <script src="vendor/hypher.js"></script>

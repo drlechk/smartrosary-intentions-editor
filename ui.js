@@ -348,6 +348,7 @@
 		      statusSchedSaveFailed: 'Nie udało się zapisać harmonogramu (zobacz konsolę).',
 		      fwUpdateAvailable: ({ current, latest }) => `Dostępna aktualizacja oprogramowania: ${current} → ${latest}`,
 		      fwUpdateOpenInstaller: 'Aktualizuj',
+		      deployLabel: 'Ostatnie wdrożenie',
 		    },
 			    en: {
 			      title: 'SmartRosary — Intentions',
@@ -469,6 +470,7 @@
 		      statusSchedSaveFailed: 'Failed to save scheduler (see console).',
 		      fwUpdateAvailable: ({ current, latest }) => `Firmware update available: ${current} → ${latest}`,
 		      fwUpdateOpenInstaller: 'Update',
+		      deployLabel: 'Last deploy',
 		    },
 			    de: {
 			      title: 'SmartRosary — Anliegen',
@@ -590,6 +592,7 @@
 		      statusSchedSaveFailed: 'Planer konnte nicht gespeichert werden (siehe Konsole).',
 		      fwUpdateAvailable: ({ current, latest }) => `Firmware-Update verfügbar: ${current} → ${latest}`,
 		      fwUpdateOpenInstaller: 'Aktualisieren',
+		      deployLabel: 'Letzte Bereitstellung',
 		    },
 		  };
 
@@ -678,6 +681,21 @@
 			      applyTheme(currentTheme);
 			    } catch {}
 			    renderOverviewPills();
+
+			    const deployInfo = el('deployInfo');
+			    if (deployInfo) {
+			      const ts = new Date(document.lastModified);
+			      const formatted = isNaN(ts.getTime())
+			        ? ''
+			        : ts.toLocaleString(undefined, {
+			            year: 'numeric',
+			            month: 'short',
+			            day: 'numeric',
+			            hour: '2-digit',
+			            minute: '2-digit'
+			          });
+			      deployInfo.textContent = formatted ? `${t.deployLabel || 'Last deploy'}: ${formatted}` : '';
+			    }
 			  }
 
 			  function renderOverviewPills() {
