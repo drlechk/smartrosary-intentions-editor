@@ -347,7 +347,7 @@
 		      statusEraseFailed: 'Nie udało się wymazać partycji (zobacz konsolę).',
 		      statusSchedSaved: 'Zapisano harmonogram intencji.',
 		      statusSchedSaveFailed: 'Nie udało się zapisać harmonogramu (zobacz konsolę).',
-		      fwUpdateAvailable: ({ current, latest }) => `Dostępna aktualizacja oprogramowania: ${current} → ${latest}`,
+		      fwUpdateAvailable: 'Dostępna aktualizacja oprogramowania: {current} → {latest}',
 		      fwUpdateOpenInstaller: 'Aktualizuj',
 		      deployLabel: 'Ostatnie wdrożenie',
 		    },
@@ -469,7 +469,7 @@
 		      statusEraseFailed: 'Failed to erase partition (see console).',
 		      statusSchedSaved: 'Saved intentions scheduler.',
 		      statusSchedSaveFailed: 'Failed to save scheduler (see console).',
-		      fwUpdateAvailable: ({ current, latest }) => `Firmware update available: ${current} → ${latest}`,
+		      fwUpdateAvailable: 'Firmware update available: {current} → {latest}',
 		      fwUpdateOpenInstaller: 'Update',
 		      deployLabel: 'Last deploy',
 		    },
@@ -591,7 +591,7 @@
 		      statusEraseFailed: 'Partition konnte nicht gelöscht werden (siehe Konsole).',
 		      statusSchedSaved: 'Anliegen-Planer gespeichert.',
 		      statusSchedSaveFailed: 'Planer konnte nicht gespeichert werden (siehe Konsole).',
-		      fwUpdateAvailable: ({ current, latest }) => `Firmware-Update verfügbar: ${current} → ${latest}`,
+		      fwUpdateAvailable: 'Firmware-Update verfügbar: {current} → {latest}',
 		      fwUpdateOpenInstaller: 'Aktualisieren',
 		      deployLabel: 'Letzte Bereitstellung',
 		    },
@@ -2662,9 +2662,7 @@
 	    const current = fwUpdateState.currentVersion;
 	    const latest = fwUpdateState.latestVersion;
 
-	    const msg = typeof tr('fwUpdateAvailable') === 'function'
-	      ? tr('fwUpdateAvailable')({ current, latest })
-	      : (tr('fwUpdateAvailable') || `Firmware update available: ${current} → ${latest}`);
+	    const msg = tr('fwUpdateAvailable', { current, latest }) || `Firmware update available: ${current} → ${latest}`;
 
 	    if (textEl) textEl.textContent = msg;
 	    if (linkEl) {
