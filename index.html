@@ -88,7 +88,7 @@
 	      justify-content: center;
 	      padding: 8px 10px;
 	      border-radius: 10px;
-	      background: var(--primary-bg);
+	      background: rgba(13, 32, 48, 0.85);
 	      border: 1px solid rgba(29, 53, 81, 0.95);
 	      color: #cde3ff;
 	      font-size: 12px;
@@ -126,8 +126,8 @@
 	      .toolbar-top { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
 	      .toolbar-bottom { display: flex; gap: 6px; align-items: center; justify-content: center; flex-direction: column; width: 100%; }
 	      .toolbar-status { color: var(--muted); font-size: 11px; text-align: center; }
-			      .toolbar-progress { display: block; width: 100%; height: 6px; margin: 0; margin-top: 4px; background: #0b1119; position: relative; border-top: 1px solid #172231; overflow: hidden; }
-	      .toolbar-progress .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--accent); transition: width .2s ease; }
+	      .toolbar-progress { display: block; width: 100%; height: 6px; margin: 0; background: #0d131c; position: relative; }
+	      .toolbar-progress .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--accent); transition: width .15s ease; }
 	      main { max-width: 1400px; margin: 0 auto; padding: 12px; display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); }
 		      .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
 		      .card header { background: var(--card-hdr-bg); color: var(--text); border-bottom: 1px solid var(--border); padding: 12px 14px; border-radius: 14px 14px 0 0; }
@@ -893,35 +893,32 @@
 	    </style>
 	  </head>
 	  <body>
-	    <header>
-	      <div class="header-with-lang">
-	        <h1 id="titleTxt">SmartRosary — Intencje</h1>
-	        <div class="header-controls">
-	          <button id="themeToggle" type="button" aria-pressed="false" title="Zmień motyw">Jasny</button>
-	          <select id="language" aria-label="Language">
-	            <option value="pl">PL</option>
-	            <option value="en">EN</option>
-	            <option value="de">DE</option>
-	          </select>
-	        </div>
+	    <header class="header-with-lang">
+	      <h1 id="titleTxt">SmartRosary — Intencje</h1>
+	      <div class="header-controls">
+	        <button id="themeToggle" type="button" aria-pressed="false" title="Zmień motyw">Jasny</button>
+	        <select id="language" aria-label="Language">
+	          <option value="pl">PL</option>
+	          <option value="en">EN</option>
+	          <option value="de">DE</option>
+	        </select>
 	      </div>
 	    </header>
 
 	    <div class="toolbar-wrap">
 	      <div class="toolbar-sticky">
 	        <div class="toolbar-top">
-		          <button id="btnBleConnect" type="button">Połącz</button>
-		          <button id="btnBleRefresh" type="button" disabled>Odśwież</button>
-		          <button id="btnBleDisconnect" type="button" disabled>Rozłącz</button>
+	          <button id="btnBleConnect" type="button">Połącz</button>
+	          <button id="btnBleRefresh" type="button" disabled>Odśwież</button>
+	          <button id="btnBleDisconnect" type="button" disabled>Rozłącz</button>
 	        </div>
 	        <div class="toolbar-bottom">
-		          <div id="status" class="toolbar-status">Brak pliku. Dodaj wpisy albo wgraj .bin/.json.</div>
+	          <div id="status" class="toolbar-status">Brak pliku. Dodaj wpisy albo wgraj .bin/.json.</div>
+	          <div id="fwUpdateBanner" class="fw-update-banner" hidden>
+	            <span id="fwUpdateText"></span>
+	            <a id="fwUpdateLink" href="https://drlechk.github.io/smartrosary-web-installer/" target="_blank" rel="noreferrer">Aktualizuj</a>
+	          </div>
 	        </div>
-	      </div>
-	      </div>
-	      <div id="fwUpdateBanner" class="fw-update-banner" hidden>
-	        <span id="fwUpdateText"></span>
-	        <a id="fwUpdateLink" href="https://drlechk.github.io/smartrosary-web-installer/" target="_blank" rel="noreferrer">Aktualizuj</a>
 	      </div>
 	      <div id="globalProg" hidden class="toolbar-progress"><div class="bar"></div></div>
 	    </div>
