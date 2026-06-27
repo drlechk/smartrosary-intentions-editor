@@ -87,7 +87,7 @@
 	      justify-content: center;
 	      padding: 8px 10px;
 	      border-radius: 10px;
-	      background: rgba(13, 32, 48, 0.85);
+	      background: var(--primary-bg);
 	      border: 1px solid rgba(29, 53, 81, 0.95);
 	      color: #cde3ff;
 	      font-size: 12px;
@@ -125,7 +125,7 @@
 	      .toolbar-top { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
 	      .toolbar-bottom { display: flex; gap: 6px; align-items: center; justify-content: center; flex-direction: column; width: 100%; }
 	      .toolbar-status { color: var(--muted); font-size: 11px; text-align: center; }
-			      .toolbar-progress { display: block; width: 100%; height: 6px; margin: 0; background: #0b1119; position: relative; border-top: 1px solid #172231; overflow: hidden; }
+			      .toolbar-progress { display: block; width: 100%; height: 6px; margin: 0; margin-top: 4px; background: #0b1119; position: relative; border-top: 1px solid #172231; overflow: hidden; }
 	      .toolbar-progress .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--accent); transition: width .2s ease; }
 	      main { max-width: 1400px; margin: 0 auto; padding: 12px; display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); }
 		      .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
