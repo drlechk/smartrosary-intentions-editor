@@ -9,8 +9,13 @@ directly from `index.html` in Chrome with no backend.
 - decodes and edits intention entries in-browser
 - exports compatible `.bin` files
 - exports editable `intentions.json`
-- uploads and downloads the intention partition over BLE
+- uploads and downloads intention records over BLE without flashing the full NVS partition on current firmware
 - generates published intention binaries from `../smartrosary-intentions`
+
+BLE upload falls back to the legacy full-NVS partition transfer only when the
+current firmware lacks the safer intention-entry record characteristic, and only
+after warning that already stored intentions will be overwritten and that a
+firmware update prevents the risk.
 
 ## Run
 

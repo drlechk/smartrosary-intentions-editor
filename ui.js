@@ -276,7 +276,8 @@
 			      notConnected: 'Nie połączono.',
 			      errConnectFirst: 'Nie połączono. Najpierw kliknij „Połącz”.',
 			      errGeneratedPartitionSize: 'Wygenerowana partycja ma rozmiar {len}, oczekiwano 20480.',
-			      errDeviceConsent: 'Urządzenie wymaga potwierdzenia. Naciśnij „Allow” na urządzeniu i spróbuj ponownie.',
+		      errDeviceConsent: 'Urządzenie wymaga potwierdzenia. Naciśnij „Allow” na urządzeniu i spróbuj ponownie.',
+		      legacyIntentionsOverwriteWarning: 'Starszy transfer intencji wgra pełny obraz NVS intencji i nadpisze intencje zapisane już na urządzeniu. Dostępna jest aktualizacja firmware, która temu zapobiega dzięki bezpieczniejszemu transferowi intencji. Kontynuować?',
 			      statusNoFileLoaded: 'Brak pliku. Dodaj wpisy albo wgraj .bin/.json.',
 		      statusDeletedEntry: 'Usunięto wpis.',
 		      statusMovedEntry: 'Przeniesiono wpis.',
@@ -308,7 +309,7 @@
 		      wordBreakHigh: 'Wysoko',
 		      intentionsTitle: 'Harmonogram intencji',
 		      intentionsIntro: 'Sprawdź intencje na różańcu, ustaw daty startu i tajemnice, a następnie wyślij harmonogram do urządzenia.',
-		      intentionsErase: 'Wymaż partycję',
+		      intentionsErase: 'Wyczyść intencje',
 		      intentionsSave: 'Zapisz zmiany',
 		      intentionsAutoLabel: 'Włącz automatyczny wybór na podstawie dat startu',
 		      intentionsHint: 'Aktywna intencja to ostatni wpis, którego data startu jest dziś lub wcześniej (00:00 UTC).',
@@ -342,9 +343,9 @@
 		      setsSorrowful: 'Bolesne',
 		      setsGlorious: 'Chwalebne',
 		      setsChaplet: 'Koronka',
-		      statusEraseStart: 'Wymazywanie partycji intencji…',
-		      statusEraseDone: 'Wymazano partycję intencji.',
-		      statusEraseFailed: 'Nie udało się wymazać partycji (zobacz konsolę).',
+		      statusEraseStart: 'Czyszczenie intencji…',
+		      statusEraseDone: 'Wyczyszczono intencje.',
+		      statusEraseFailed: 'Nie udało się wyczyścić intencji (zobacz konsolę).',
 		      statusSchedSaved: 'Zapisano harmonogram intencji.',
 		      statusSchedSaveFailed: 'Nie udało się zapisać harmonogramu (zobacz konsolę).',
 		      fwUpdateAvailable: 'Dostępna aktualizacja oprogramowania: {current} → {latest}',
@@ -400,6 +401,7 @@
 			      errConnectFirst: 'Not connected. Click “Connect” first.',
 			      errGeneratedPartitionSize: 'Generated partition has size {len}, expected 20480.',
 			      errDeviceConsent: 'Device requires consent. Tap “Allow” on the device, then try again.',
+			      legacyIntentionsOverwriteWarning: 'Legacy intentions transfer will flash the full intentions NVS image and overwrite any intentions already stored on the device. A firmware update is available that prevents this by using the safer intentions transfer. Continue?',
 			      statusNoFileLoaded: 'No file loaded. Add entries or upload a .bin/.json.',
 		      statusDeletedEntry: 'Deleted entry.',
 		      statusMovedEntry: 'Moved entry.',
@@ -431,7 +433,7 @@
 		      wordBreakHigh: 'High',
 		      intentionsTitle: 'Intentions Scheduler',
 		      intentionsIntro: 'Review monthly intentions stored on the rosary, adjust start dates and mysteries, then push the schedule back to the device.',
-		      intentionsErase: 'Erase partition',
+		      intentionsErase: 'Clear intentions',
 		      intentionsSave: 'Save Changes',
 		      intentionsAutoLabel: 'Enable automatic selection based on start dates',
 		      intentionsHint: 'The active intention is the latest entry whose start date is on or before today (stored at 00:00 UTC).',
@@ -464,9 +466,9 @@
 		      setsSorrowful: 'Sorrowful',
 		      setsGlorious: 'Glorious',
 		      setsChaplet: 'Chaplet',
-		      statusEraseStart: 'Erasing intentions partition…',
-		      statusEraseDone: 'Erased intentions partition.',
-		      statusEraseFailed: 'Failed to erase partition (see console).',
+		      statusEraseStart: 'Clearing intentions…',
+		      statusEraseDone: 'Cleared intentions.',
+		      statusEraseFailed: 'Failed to clear intentions (see console).',
 		      statusSchedSaved: 'Saved intentions scheduler.',
 		      statusSchedSaveFailed: 'Failed to save scheduler (see console).',
 		      fwUpdateAvailable: 'Firmware update available: {current} → {latest}',
@@ -522,6 +524,7 @@
 			      errConnectFirst: 'Nicht verbunden. Zuerst „Verbinden“ klicken.',
 			      errGeneratedPartitionSize: 'Erzeugte Partition hat Größe {len}, erwartet 20480.',
 			      errDeviceConsent: 'Gerät erfordert Zustimmung. Tippe auf dem Gerät auf „Allow“ und versuche es erneut.',
+			      legacyIntentionsOverwriteWarning: 'Die alte Anliegen-Uebertragung schreibt das volle Anliegen-NVS-Image und ueberschreibt bereits auf dem Geraet gespeicherte Anliegen. Ein Firmware-Update ist verfuegbar, das dies durch die sicherere Anliegen-Uebertragung verhindert. Fortfahren?',
 			      statusNoFileLoaded: 'Keine Datei geladen. Einträge hinzufügen oder .bin/.json hochladen.',
 		      statusDeletedEntry: 'Eintrag gelöscht.',
 		      statusMovedEntry: 'Eintrag verschoben.',
@@ -553,7 +556,7 @@
 		      wordBreakHigh: 'Hoch',
 		      intentionsTitle: 'Anliegen-Planer',
 		      intentionsIntro: 'Überprüfe die Anliegen auf dem Rosenkranz, passe Startdaten und Geheimnisse an und speichere den Plan auf dem Gerät.',
-		      intentionsErase: 'Partition löschen',
+		      intentionsErase: 'Anliegen leeren',
 		      intentionsSave: 'Änderungen speichern',
 		      intentionsAutoLabel: 'Automatische Auswahl anhand der Startdaten aktivieren',
 		      intentionsHint: 'Aktiv ist der letzte Eintrag, dessen Startdatum heute oder früher ist (00:00 UTC).',
@@ -586,9 +589,9 @@
 		      setsSorrowful: 'Schmerzensreiche',
 		      setsGlorious: 'Glorreiche',
 		      setsChaplet: 'Korone',
-		      statusEraseStart: 'Anliegen-Partition wird gelöscht…',
-		      statusEraseDone: 'Anliegen-Partition gelöscht.',
-		      statusEraseFailed: 'Partition konnte nicht gelöscht werden (siehe Konsole).',
+		      statusEraseStart: 'Anliegen werden geleert…',
+		      statusEraseDone: 'Anliegen geleert.',
+		      statusEraseFailed: 'Anliegen konnten nicht geleert werden (siehe Konsole).',
 		      statusSchedSaved: 'Anliegen-Planer gespeichert.',
 		      statusSchedSaveFailed: 'Planer konnte nicht gespeichert werden (siehe Konsole).',
 		      fwUpdateAvailable: 'Firmware-Update verfügbar: {current} → {latest}',
@@ -2140,7 +2143,7 @@
 		  bleReady = true;
 
 	  function isBleConnectedForUpload() {
-	    return !!(bleDevice?.gatt?.connected && bleIntentsChar);
+	    return !!(bleDevice?.gatt?.connected && (bleInfoIntentEntryChar || bleIntentsChar));
 	  }
 
 		  function isBleConnectedForDownload() {
@@ -2242,11 +2245,14 @@
       throw new Error('Device denied consent or timed out. Please tap "Allow" on the device and try again.');
     }
 
-	    bleIntentsChar = await svc.getCharacteristic(INTENTS_CHAR_UUID);
 	    bleInfoCtrlChar = await svc.getCharacteristic(INFO_CTRL_UUID);
 	    try { bleInfoSettingsChar = await svc.getCharacteristic(INFO_SETTINGS_UUID); } catch { bleInfoSettingsChar = null; }
-	    bleInfoIntentionsChar = await svc.getCharacteristic(INFO_INTENTIONS_UUID);
-	    bleInfoIntentEntryChar = await svc.getCharacteristic(INFO_INTENT_ENTRY_UUID);
+	    try { bleInfoIntentionsChar = await svc.getCharacteristic(INFO_INTENTIONS_UUID); } catch { bleInfoIntentionsChar = null; }
+	    try { bleInfoIntentEntryChar = await svc.getCharacteristic(INFO_INTENT_ENTRY_UUID); } catch { bleInfoIntentEntryChar = null; }
+	    try { bleIntentsChar = await svc.getCharacteristic(INTENTS_CHAR_UUID); } catch { bleIntentsChar = null; }
+	    if (!bleInfoIntentEntryChar && !bleIntentsChar) {
+	      throw new Error('Intentions upload is unavailable on this firmware.');
+	    }
 	    try {
 	      bleStatusChar = await svc.getCharacteristic(STATUS_CHAR_UUID);
 	      bleStatusChar.addEventListener('characteristicvaluechanged', () => { bleReady = true; });
@@ -2284,18 +2290,6 @@
     bleReady = false;
   }
 
-  function crc32(buf) {
-    let crc = 0xFFFFFFFF;
-    for (const b of buf) {
-      crc ^= b;
-      for (let i = 0; i < 8; i++) {
-        const mask = -(crc & 1);
-        crc = (crc >>> 1) ^ (0xEDB88320 & mask);
-      }
-    }
-    return (crc ^ 0xFFFFFFFF) >>> 0;
-  }
-
 	  const OP_SET_PREF = 0x50;
 	  const TYPE_BOOL = 0x01;
 	  const TYPE_U8 = 0x11;
@@ -2314,6 +2308,11 @@
 	    a[2] = (v >> 16) & 0xff;
 	    a[3] = (v >> 24) & 0xff;
 	    return a;
+	  }
+
+	  function le16(n) {
+	    const v = Number(n) >>> 0;
+	    return [v & 0xff, (v >> 8) & 0xff];
 	  }
 
 	  function packKV(op, type, key, valBytes) {
@@ -2348,28 +2347,107 @@
 		    await bleWritePref('time', TYPE_U32, le32(epochSeconds));
 		  }
 
-		  async function sendNVSOverBle(data, filename) {
+		  const INTENTIONS_WRITE_BEGIN = 0x80;
+		  const INTENTIONS_FIELD_BEGIN = 0x81;
+		  const INTENTIONS_FIELD_CHUNK = 0x82;
+		  const INTENTIONS_COMMIT = 0x83;
+		  const INTENTIONS_FIELD_TITLE = 0;
+		  const INTENTIONS_FIELD_DESC = 1;
+
+		  async function writeIntentionsPaced(payload) {
+		    bleReady = false;
+		    await bleInfoIntentEntryChar.writeValue(payload);
+		    await bleWaitReady();
+		  }
+
+		  async function sendIntentionsFieldOverBle(index, field, text) {
+		    const bytes = new TextEncoder().encode(String(text ?? ''));
+		    await writeIntentionsPaced(Uint8Array.of(
+		      INTENTIONS_FIELD_BEGIN,
+		      ...le16(index),
+		      field & 0xff,
+		      ...le32(bytes.length),
+		    ));
+
+		    let offset = 0;
+		    const chunkSize = 240;
+		    while (offset < bytes.length) {
+		      const len = Math.min(chunkSize, bytes.length - offset);
+		      const packet = new Uint8Array(6 + len);
+		      packet[0] = INTENTIONS_FIELD_CHUNK;
+		      packet[1] = index & 0xff;
+		      packet[2] = (index >> 8) & 0xff;
+		      packet[3] = field & 0xff;
+		      packet[4] = offset & 0xff;
+		      packet[5] = (offset >> 8) & 0xff;
+		      packet.set(bytes.slice(offset, offset + len), 6);
+		      await writeIntentionsPaced(packet);
+		      offset += len;
+		    }
+		    return bytes.length;
+		  }
+
+		  async function sendIntentionsModelOverBle(uploadModel) {
+		    const count = clamp(uploadModel.numIntentions | 0, 0, SCHED_MAX_SLOTS);
+		    await writeIntentionsPaced(Uint8Array.of(INTENTIONS_WRITE_BEGIN, ...le16(count)));
+
+		    let totalBytes = 0;
+		    for (let idx = 0; idx < count; idx++) {
+		      totalBytes += new TextEncoder().encode(String(uploadModel.titles?.[idx] ?? '')).length;
+		      totalBytes += new TextEncoder().encode(String(uploadModel.descs?.[idx] ?? '')).length;
+		    }
+		    let sentBytes = 0;
+		    const updateProgress = () => {
+		      const pct = totalBytes ? Math.round((sentBytes / totalBytes) * 100) : 100;
+		      setStatusKey('statusBleUploadProgress', '', { pct });
+		      setGlobalProgress(pct);
+		    };
+		    updateProgress();
+		    for (let idx = 0; idx < count; idx++) {
+		      sentBytes += await sendIntentionsFieldOverBle(idx, INTENTIONS_FIELD_TITLE, uploadModel.titles?.[idx] ?? '');
+		      updateProgress();
+		      sentBytes += await sendIntentionsFieldOverBle(idx, INTENTIONS_FIELD_DESC, uploadModel.descs?.[idx] ?? '');
+		      updateProgress();
+		    }
+		    await writeIntentionsPaced(Uint8Array.of(INTENTIONS_COMMIT));
+		    setGlobalProgress(100);
+		  }
+
+		  function crc32(buf) {
+		    let crc = 0xFFFFFFFF;
+		    for (const b of buf) {
+		      crc ^= b;
+		      for (let i = 0; i < 8; i++) {
+		        const mask = -(crc & 1);
+		        crc = (crc >>> 1) ^ (0xEDB88320 & mask);
+		      }
+		    }
+		    return (crc ^ 0xFFFFFFFF) >>> 0;
+		  }
+
+		  async function sendLegacyNVSOverBle(data, filename) {
 		    const name = new TextEncoder().encode(filename);
+		    bleReady = false;
 		    await bleIntentsChar.writeValue(name);
 		    await bleWaitReady();
 
-	    let offset = 0;
-	    const chunkSize = 320;
-	    while (offset < data.length) {
-      const len = Math.min(chunkSize, data.length - offset);
-      const chunk = data.slice(offset, offset + len);
-      const c = crc32(chunk);
-	      const packet = new Uint8Array(len + 4);
-	      packet.set(chunk);
-	      new DataView(packet.buffer).setUint32(len, c, true);
-	      await bleIntentsChar.writeValue(packet);
-	      await bleWaitReady();
-	      offset += len;
-	      const pct = Math.min(100, Math.round((offset / data.length) * 100));
-	      setStatusKey('statusBleUploadProgress', '', { pct });
-	      setGlobalProgress(pct);
-	    }
-	  }
+		    let offset = 0;
+		    const chunkSize = 320;
+		    while (offset < data.length) {
+		      const len = Math.min(chunkSize, data.length - offset);
+		      const chunk = data.slice(offset, offset + len);
+		      const packet = new Uint8Array(len + 4);
+		      packet.set(chunk);
+		      new DataView(packet.buffer).setUint32(len, crc32(chunk), true);
+		      bleReady = false;
+		      await bleIntentsChar.writeValue(packet);
+		      await bleWaitReady();
+		      offset += len;
+		      const pct = Math.min(100, Math.round((offset / data.length) * 100));
+		      setStatusKey('statusBleUploadProgress', '', { pct });
+		      setGlobalProgress(pct);
+		    }
+		  }
 
 	  function decodeBleText(value) {
 	    const u8 = new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
@@ -2478,13 +2556,17 @@
 		    updateFromDetailPanel();
 		    try {
 		      if (!isBleConnectedForUpload()) throw new Error('__ERR_CONNECT_FIRST__');
-		      const bin = NVS.buildIntentionsBin(getModelForExport());
-			      if (bin.length !== 20480) {
-			        throw new Error(`Generated partition has size ${bin.length}, expected 20480.`);
-			      }
+		      const uploadModel = getModelForExport();
 		      setStatusKey('statusBleUploadStart', '');
 	      setGlobalProgress(0);
-	      await sendNVSOverBle(bin, 'nvs-intentions.bin');
+	      if (bleInfoIntentEntryChar) {
+	        await sendIntentionsModelOverBle(uploadModel);
+	      } else {
+	        const ok = globalThis.confirm ? globalThis.confirm(tr('legacyIntentionsOverwriteWarning')) : false;
+	        if (!ok) { setGlobalProgress(null); return; }
+	        const bin = NVS.buildIntentionsBin(uploadModel);
+	        await sendLegacyNVSOverBle(bin, 'nvs-intentions.bin');
+	      }
 	      setStatusKey('statusBleUploadDone', 'ok');
 	      setGlobalProgress(null);
 		    } catch (e) {
@@ -2568,8 +2650,14 @@
 
 	      setStatusKey('statusEraseStart', '');
 	      setGlobalProgress(0);
-	      const empty = NVS.buildIntentionsBin({ numIntentions: 0, iS: '', titles: [], descs: [] });
-	      await sendNVSOverBle(empty, 'nvs-intentions.bin');
+	      if (bleInfoIntentEntryChar) {
+	        await sendIntentionsModelOverBle({ numIntentions: 0, iS: '', titles: [], descs: [] });
+	      } else {
+	        const legacyOk = globalThis.confirm ? globalThis.confirm(tr('legacyIntentionsOverwriteWarning')) : false;
+	        if (!legacyOk) { setGlobalProgress(null); return; }
+	        const empty = NVS.buildIntentionsBin({ numIntentions: 0, iS: '', titles: [], descs: [] });
+	        await sendLegacyNVSOverBle(empty, 'nvs-intentions.bin');
+	      }
 	      setStatusKey('statusEraseDone', 'ok');
 	      setGlobalProgress(null);
 	      try { await startBleIntentionsDownload(); } catch {}
