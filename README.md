@@ -9,6 +9,7 @@ directly from `index.html` in Chrome with no backend.
 - decodes and edits intention entries in-browser
 - exports compatible `.bin` files
 - exports editable `intentions.json`
+- loads built-in intention presets generated from `../smartrosary-intentions`
 - uploads and downloads intention records over BLE without flashing the full NVS partition on current firmware
 - generates published intention binaries from `../smartrosary-intentions`
 
@@ -31,3 +32,14 @@ The generator reads every `packages/*.json` definition from
 `/Users/lech/Projects/smartrosary-intentions` by default. Use
 `SMARTROSARY_INTENTIONS_DIR=/path/to/smartrosary-intentions` to generate from
 another checkout.
+
+## Generate Editor Presets
+
+The in-page preset selector reads `intentions-presets.js`, generated from the
+same canonical package definitions:
+
+```sh
+node scripts/generate-intentions-presets.mjs
+```
+
+Regenerate this file whenever `smartrosary-intentions/packages/*.json` changes.

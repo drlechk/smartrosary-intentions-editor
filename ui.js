@@ -34,6 +34,11 @@
 		  const btnAddEntry = el('btnAddEntry');
 		  const btnDownload = el('btnDownload');
 		  const btnSaveJson = el('btnSaveJson');
+		  const presetsTitleEl = el('presetsTitle');
+		  const presetLabelEl = el('presetLabel');
+		  const presetSelectEl = el('intentionsPresetSelect');
+		  const btnLoadPreset = el('btnLoadPreset');
+		  const presetsHintEl = el('presetsHint');
 	  const btnSyncFromTitles = el('btnSyncFromTitles');
 	  const usageFill = el('usageFill');
 	  const usageStats = el('usageStats');
@@ -242,6 +247,11 @@
 			      utilLabel: 'Wykorzystanie',
 		      editor: 'Edytor',
 		      backupRestore: 'Kopia i przywracanie',
+		      presetsTitle: 'Presety intencji',
+		      presetLabel: 'Preset',
+		      presetPlaceholder: 'Wybierz preset',
+		      loadPreset: 'Wczytaj preset',
+		      presetsHint: 'Wczytaj gotowy pakiet intencji do edytora.',
 		      restore: 'Wczytaj z pliku…',
 		      bleReqHint: '',
 		      previewSettings: 'Ustawienia podglądu',
@@ -284,6 +294,7 @@
 		      statusAddedEntry: 'Dodano nowy wpis.',
 		      statusMaxEntries: 'Osiągnięto maksymalnie {max} wpisów.',
 		      statusLoaded: 'Wczytano: {label}',
+		      statusPresetUnavailable: 'Brak dostępnych presetów intencji.',
 		      statusParseNvsFailed: 'Nie udało się odczytać partycji NVS (zobacz konsolę).',
 		      statusParseJsonFailed: 'Nie udało się odczytać pliku intentions.json (zobacz konsolę).',
 		      statusInternalBinLen: 'Błąd wewnętrzny: długość {len}, oczekiwano 20480',
@@ -366,6 +377,11 @@
 			      utilLabel: 'Utilization',
 		      editor: 'Editor',
 		      backupRestore: 'Backup & Restore',
+		      presetsTitle: 'Intention presets',
+		      presetLabel: 'Preset',
+		      presetPlaceholder: 'Select a preset',
+		      loadPreset: 'Load preset',
+		      presetsHint: 'Load a built-in intentions package into the editor.',
 		      restore: 'Load from file…',
 		      bleReqHint: '',
 		      previewSettings: 'Preview Settings',
@@ -408,6 +424,7 @@
 		      statusAddedEntry: 'Added a new entry.',
 		      statusMaxEntries: 'Maximum of {max} entries reached.',
 		      statusLoaded: 'Loaded: {label}',
+		      statusPresetUnavailable: 'No intention presets are available.',
 		      statusParseNvsFailed: 'Failed to parse NVS partition (see console).',
 		      statusParseJsonFailed: 'Failed to parse intentions JSON (see console).',
 		      statusInternalBinLen: 'Internal error: bin length {len}, expected 20480',
@@ -489,6 +506,11 @@
 			      utilLabel: 'Auslastung',
 		      editor: 'Editor',
 		      backupRestore: 'Sichern & Wiederherstellen',
+		      presetsTitle: 'Anliegen-Vorlagen',
+		      presetLabel: 'Vorlage',
+		      presetPlaceholder: 'Vorlage auswählen',
+		      loadPreset: 'Vorlage laden',
+		      presetsHint: 'Eine eingebaute Anliegen-Vorlage in den Editor laden.',
 		      restore: 'Aus Datei laden…',
 		      bleReqHint: '',
 		      previewSettings: 'Vorschau-Einstellungen',
@@ -531,6 +553,7 @@
 		      statusAddedEntry: 'Neuen Eintrag hinzugefügt.',
 		      statusMaxEntries: 'Maximal {max} Einträge erreicht.',
 		      statusLoaded: 'Geladen: {label}',
+		      statusPresetUnavailable: 'Keine Anliegen-Vorlagen verfügbar.',
 		      statusParseNvsFailed: 'NVS-Partition konnte nicht gelesen werden (siehe Konsole).',
 		      statusParseJsonFailed: 'intentions.json konnte nicht gelesen werden (siehe Konsole).',
 		      statusInternalBinLen: 'Interner Fehler: Länge {len}, erwartet 20480',
@@ -611,6 +634,53 @@
 		    return getEditorLang();
 		  }
 
+		  function escapeHtml(value) {
+		    return String(value ?? '')
+		      .replaceAll('&', '&amp;')
+		      .replaceAll('<', '&lt;')
+		      .replaceAll('>', '&gt;')
+		      .replaceAll('"', '&quot;')
+		      .replaceAll("'", '&#39;');
+		  }
+
+		  function getPresetList() {
+		    const presets = globalThis.SmartRosaryIntentionsPresets;
+		    return Array.isArray(presets) ? presets : [];
+		  }
+
+		  function renderPresetOptions() {
+		    if (!presetSelectEl) return;
+		    const presets = getPresetList();
+		    const previousValue = presetSelectEl.value;
+		    const options = [
+		      `<option value="">${escapeHtml(tr('presetPlaceholder'))}</option>`,
+		      ...presets.map((preset) =>
+		        `<option value="${escapeHtml(preset.id)}">${escapeHtml(preset.label || preset.id)}</option>`
+		      ),
+		    ];
+		    presetSelectEl.innerHTML = options.join('');
+		    presetSelectEl.value = presets.some((preset) => preset.id === previousValue) ? previousValue : '';
+		    presetSelectEl.disabled = presets.length === 0;
+		    if (btnLoadPreset) btnLoadPreset.disabled = !presetSelectEl.value || presets.length === 0;
+		  }
+
+		  function loadSelectedPreset() {
+		    if (!presetSelectEl) return;
+		    const presets = getPresetList();
+		    const preset = presets.find((item) => item.id === presetSelectEl.value);
+		    if (!preset || !preset.package) {
+		      setStatusKey('statusPresetUnavailable', 'danger');
+		      return;
+		    }
+		    try {
+		      const pkg = JSON.parse(JSON.stringify(preset.package));
+		      loadIntentionsFromObject(pkg, preset.label || preset.id);
+		    } catch (err) {
+		      console.error(err);
+		      setStatusKey('statusParseJsonFailed', 'danger');
+		    }
+		  }
+
 			  function applyUiLang() {
 			    const lang = getUiLang();
 			    const t = UI_STRINGS[lang] || UI_STRINGS.en;
@@ -628,6 +698,11 @@
 		    if (intentionsEmptyEl) intentionsEmptyEl.textContent = t.intentionsEmpty;
 		    if (entriesCountLabelEl) entriesCountLabelEl.textContent = t.entriesCountLabel || t.entries;
 		    if (utilLabelEl) utilLabelEl.textContent = t.utilLabel || 'Partition';
+		    if (presetsTitleEl) presetsTitleEl.textContent = t.presetsTitle;
+		    if (presetLabelEl) presetLabelEl.textContent = t.presetLabel;
+		    if (btnLoadPreset) btnLoadPreset.textContent = t.loadPreset;
+		    if (presetsHintEl) presetsHintEl.textContent = t.presetsHint;
+		    renderPresetOptions();
 		    const backupRestoreTitle = el('backupRestoreTitle');
 		    if (backupRestoreTitle) backupRestoreTitle.textContent = t.backupRestore;
 		    if (btnRestoreFile) btnRestoreFile.textContent = t.restore;
@@ -1341,6 +1416,14 @@
 			    btnRestoreFile.addEventListener('click', () => {
 			      try { fileInput.click(); } catch {}
 			    });
+			  }
+			  if (presetSelectEl) {
+			    presetSelectEl.addEventListener('change', () => {
+			      if (btnLoadPreset) btnLoadPreset.disabled = !presetSelectEl.value;
+			    });
+			  }
+			  if (btnLoadPreset) {
+			    btnLoadPreset.addEventListener('click', () => loadSelectedPreset());
 			  }
 
 	  if (intentionsAutoEl) {

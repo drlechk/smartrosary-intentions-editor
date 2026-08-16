@@ -144,6 +144,9 @@
 	      [data-theme="light"] .kpi .label { color: #64748b; }
 	      [data-theme="light"] .kpi .value { color: #0f172a; }
 	      .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+	      .preset-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+	      .preset-row label { grid-column: 1 / -1; }
+	      .preset-row button { white-space: nowrap; }
 	      /* Dashboard-like settings row */
 	      .settings-list { display: grid; gap: 14px; }
 	      .setting { display: flex; align-items: center; justify-content: space-between; background: #0d131c; border: 1px solid #172231; border-radius: 12px; padding: 10px 12px; }
@@ -885,10 +888,11 @@
 	      body.theme-light #intentionsAutoLabel {
 	        color: #0f172a;
 	      }
-	      @media (max-width: 900px) {
+	    @media (max-width: 900px) {
 	        main { grid-template-columns: 1fr; }
 	        header h1 { font-size: 15px; }
 	        input, textarea { font-size: 16px; } /* mobile-friendly tap size */
+	        .preset-row { grid-template-columns: 1fr; }
 	      }
 	    </style>
 	  </head>
@@ -947,6 +951,14 @@
 			            <div class="usage-bar"><span id="usageFill"></span></div>
 			            <div class="usage-stats" id="usageStats" style="display:none"></div>
 			          </div>
+		          <div style="height:14px"></div>
+			          <h3 id="presetsTitle" style="margin:0 0 10px; font-size:16px; font-weight:700;">Presets</h3>
+			          <div class="preset-row">
+			            <label for="intentionsPresetSelect" id="presetLabel">Intention preset</label>
+			            <select id="intentionsPresetSelect"></select>
+			            <button id="btnLoadPreset" class="secondary" type="button">Load preset</button>
+			          </div>
+			          <small class="hint" id="presetsHint">Load a built-in preset into the editor.</small>
 		          <div style="height:14px"></div>
 			          <h3 id="backupRestoreTitle" style="margin:0 0 10px; font-size:16px; font-weight:700;">Backup &amp; Restore</h3>
 		          <div class="toolbar">
@@ -1068,6 +1080,7 @@
 	    </footer>
 
     <script src="nvs.js"></script>
+    <script src="intentions-presets.js"></script>
     <script src="vendor/hypher.js"></script>
     <script src="vendor/hyphenation.pl.js"></script>
     <script src="firmware-update.js"></script>
