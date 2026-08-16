@@ -251,7 +251,7 @@
 		      presetLabel: 'Preset',
 		      presetPlaceholder: 'Wybierz preset',
 		      loadPreset: 'Wczytaj preset',
-		      presetsHint: 'Wczytaj gotowy pakiet intencji do edytora.',
+		      presetsHint: 'Wybierz preset, aby wczytać go do edytora.',
 		      restore: 'Wczytaj z pliku…',
 		      bleReqHint: '',
 		      previewSettings: 'Ustawienia podglądu',
@@ -294,6 +294,7 @@
 		      statusAddedEntry: 'Dodano nowy wpis.',
 		      statusMaxEntries: 'Osiągnięto maksymalnie {max} wpisów.',
 		      statusLoaded: 'Wczytano: {label}',
+		      statusPresetLoaded: 'Wczytano preset: {label}',
 		      statusPresetUnavailable: 'Brak dostępnych presetów intencji.',
 		      statusParseNvsFailed: 'Nie udało się odczytać partycji NVS (zobacz konsolę).',
 		      statusParseJsonFailed: 'Nie udało się odczytać pliku intentions.json (zobacz konsolę).',
@@ -381,7 +382,7 @@
 		      presetLabel: 'Preset',
 		      presetPlaceholder: 'Select a preset',
 		      loadPreset: 'Load preset',
-		      presetsHint: 'Load a built-in intentions package into the editor.',
+		      presetsHint: 'Select a preset to load it into the editor.',
 		      restore: 'Load from file…',
 		      bleReqHint: '',
 		      previewSettings: 'Preview Settings',
@@ -424,6 +425,7 @@
 		      statusAddedEntry: 'Added a new entry.',
 		      statusMaxEntries: 'Maximum of {max} entries reached.',
 		      statusLoaded: 'Loaded: {label}',
+		      statusPresetLoaded: 'Loaded preset: {label}',
 		      statusPresetUnavailable: 'No intention presets are available.',
 		      statusParseNvsFailed: 'Failed to parse NVS partition (see console).',
 		      statusParseJsonFailed: 'Failed to parse intentions JSON (see console).',
@@ -467,6 +469,7 @@
 			      previewOverflowScroll: 'overflow (scroll)',
 			      previewOverflowSourceKept: 'overflow (source kept)',
 			      previewLinesOne: '{n} line',
+			      previewLinesFew: '{n} lines',
 			      previewLinesMany: '{n} lines',
 			      editEntry: 'Edit',
 		      collapseEdit: 'Collapse',
@@ -510,7 +513,7 @@
 		      presetLabel: 'Vorlage',
 		      presetPlaceholder: 'Vorlage auswählen',
 		      loadPreset: 'Vorlage laden',
-		      presetsHint: 'Eine eingebaute Anliegen-Vorlage in den Editor laden.',
+		      presetsHint: 'Wähle eine Vorlage aus, um sie in den Editor zu laden.',
 		      restore: 'Aus Datei laden…',
 		      bleReqHint: '',
 		      previewSettings: 'Vorschau-Einstellungen',
@@ -553,6 +556,7 @@
 		      statusAddedEntry: 'Neuen Eintrag hinzugefügt.',
 		      statusMaxEntries: 'Maximal {max} Einträge erreicht.',
 		      statusLoaded: 'Geladen: {label}',
+		      statusPresetLoaded: 'Vorlage geladen: {label}',
 		      statusPresetUnavailable: 'Keine Anliegen-Vorlagen verfügbar.',
 		      statusParseNvsFailed: 'NVS-Partition konnte nicht gelesen werden (siehe Konsole).',
 		      statusParseJsonFailed: 'intentions.json konnte nicht gelesen werden (siehe Konsole).',
@@ -596,6 +600,7 @@
 			      previewOverflowScroll: 'Überlauf (Scroll)',
 			      previewOverflowSourceKept: 'Überlauf (Text behalten)',
 			      previewLinesOne: '{n} Zeile',
+			      previewLinesFew: '{n} Zeilen',
 			      previewLinesMany: '{n} Zeilen',
 			      editEntry: 'Bearbeiten',
 		      collapseEdit: 'Einklappen',
@@ -674,7 +679,9 @@
 		    }
 		    try {
 		      const pkg = JSON.parse(JSON.stringify(preset.package));
-		      loadIntentionsFromObject(pkg, preset.label || preset.id);
+		      const label = preset.label || preset.id;
+		      loadIntentionsFromObject(pkg, label);
+		      setStatusKey('statusPresetLoaded', 'ok', { label });
 		    } catch (err) {
 		      console.error(err);
 		      setStatusKey('statusParseJsonFailed', 'danger');
@@ -1419,7 +1426,9 @@
 			  }
 			  if (presetSelectEl) {
 			    presetSelectEl.addEventListener('change', () => {
-			      if (btnLoadPreset) btnLoadPreset.disabled = !presetSelectEl.value;
+			      const hasPreset = !!presetSelectEl.value;
+			      if (btnLoadPreset) btnLoadPreset.disabled = !hasPreset;
+			      if (hasPreset) loadSelectedPreset();
 			    });
 			  }
 			  if (btnLoadPreset) {
