@@ -27,6 +27,7 @@ Open `index.html` directly in Chrome.
 node scripts/generate-intentions-binaries.mjs ../smartrosary-web-installer/intentions
 ```
 
-The generator reads `/Users/lech/Projects/smartrosary-intentions` by default.
-Use `SMARTROSARY_INTENTIONS_DIR=/path/to/smartrosary-intentions` to generate
-from another checkout.
+The generator reads every `packages/*.json` definition from
+`/Users/lech/Projects/smartrosary-intentions` by default. Use
+`SMARTROSARY_INTENTIONS_DIR=/path/to/smartrosary-intentions` to generate from
+another checkout.

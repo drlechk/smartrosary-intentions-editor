@@ -9,7 +9,6 @@ const intentionsRoot = path.resolve(
   process.env.SMARTROSARY_INTENTIONS_DIR || path.join(root, "..", "smartrosary-intentions"),
 );
 const outputDir = path.resolve(process.argv[2] || path.join(root, "dist", "intentions"));
-const packageIds = ["pmkdus-2025", "pmkdus-2026"];
 
 globalThis.window = globalThis;
 
@@ -20,6 +19,13 @@ function runScript(file) {
 function readPackage(id) {
   const file = path.join(intentionsRoot, "packages", `${id}.json`);
   return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function readPackageIds() {
+  return fs.readdirSync(path.join(intentionsRoot, "packages"))
+    .filter((name) => name.endsWith(".json"))
+    .map((name) => path.basename(name, ".json"))
+    .sort();
 }
 
 function assertEqualArray(actual, expected, label) {
@@ -36,7 +42,7 @@ function assertEqualArray(actual, expected, label) {
 runScript(path.join(root, "nvs.js"));
 fs.mkdirSync(outputDir, { recursive: true });
 
-for (const id of packageIds) {
+for (const id of readPackageIds()) {
   const pkg = readPackage(id);
   const expectedCount = pkg.numIntentions | 0;
   const bytes = globalThis.NVS.buildIntentionsBin({
