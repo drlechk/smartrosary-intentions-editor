@@ -1,4 +1,4 @@
-// Generated from smartrosary-intentions/packages/*.json. Do not edit manually.
+// Generated from smartrosary-intentions/intentions/*.json and packages/*.json. Do not edit manually.
 window.SmartRosaryIntentionsPresets = [
   {
     "id": "duchowa-adopcja",

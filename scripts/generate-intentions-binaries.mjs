@@ -16,16 +16,57 @@ function runScript(file) {
   vm.runInThisContext(fs.readFileSync(file, "utf8"), { filename: file });
 }
 
-function readPackage(id) {
-  const file = path.join(intentionsRoot, "packages", `${id}.json`);
-  return JSON.parse(fs.readFileSync(file, "utf8"));
+function readJsonFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir)
+    .filter((name) => name.endsWith(".json"))
+    .sort()
+    .map((name) => ({
+      id: path.basename(name, ".json"),
+      json: JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")),
+    }));
 }
 
-function readPackageIds() {
-  return fs.readdirSync(path.join(intentionsRoot, "packages"))
-    .filter((name) => name.endsWith(".json"))
-    .map((name) => path.basename(name, ".json"))
-    .sort();
+function packageFromSingleIntention(sourceId, item) {
+  const id = item.id || sourceId;
+  const title = item.title || item.label || id;
+  const desc = item.desc || item.description || "";
+  return {
+    format: "smartrosary-intentions-v1",
+    id,
+    label: item.label || title,
+    filename: item.filename || `nvs-intentions-${id}.bin`,
+    partitionSize: item.partitionSize || 20480,
+    nvsVersion: item.nvsVersion || 2,
+    numIntentions: 1,
+    iS: title,
+    titles: [title],
+    descs: [desc],
+    sourceType: "intention",
+  };
+}
+
+function packageFromMultiPackage(sourceId, pkg) {
+  const id = pkg.id || sourceId;
+  return {
+    ...pkg,
+    id,
+    label: pkg.label || id,
+    filename: pkg.filename || `nvs-intentions-${id}.bin`,
+    sourceType: "package",
+  };
+}
+
+function readInstallablePackages() {
+  const singles = readJsonFiles(path.join(intentionsRoot, "intentions"))
+    .map(({ id, json }) => packageFromSingleIntention(id, json));
+  const packages = readJsonFiles(path.join(intentionsRoot, "packages"))
+    .map(({ id, json }) => packageFromMultiPackage(id, json));
+  return [...singles, ...packages].sort((a, b) => {
+    const byType = String(a.sourceType).localeCompare(String(b.sourceType));
+    if (byType !== 0) return byType;
+    return String(a.label).localeCompare(String(b.label), "pl");
+  });
 }
 
 function assertEqualArray(actual, expected, label) {
@@ -42,8 +83,10 @@ function assertEqualArray(actual, expected, label) {
 runScript(path.join(root, "nvs.js"));
 fs.mkdirSync(outputDir, { recursive: true });
 
-for (const id of readPackageIds()) {
-  const pkg = readPackage(id);
+const manifestItems = [];
+
+for (const pkg of readInstallablePackages()) {
+  const id = pkg.id;
   const expectedCount = pkg.numIntentions | 0;
   const bytes = globalThis.NVS.buildIntentionsBin({
     numIntentions: expectedCount,
@@ -63,5 +106,22 @@ for (const id of readPackageIds()) {
 
   const filename = pkg.filename || `nvs-intentions-${id}.bin`;
   fs.writeFileSync(path.join(outputDir, filename), bytes);
+  manifestItems.push({
+    id,
+    label: pkg.label || id,
+    type: pkg.sourceType === "intention" ? "intention" : "package",
+    path: `intentions/${filename}`,
+    filename,
+    count: expectedCount,
+    size: bytes.length,
+  });
   console.log(`${filename}: ${bytes.length} bytes, intentions=${parsed.numIntentions}`);
 }
+
+const manifest = {
+  format: "smartrosary-intentions-manifest-v1",
+  version: "1.0",
+  items: manifestItems,
+};
+fs.writeFileSync(path.join(outputDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+console.log(`manifest.json: ${manifestItems.length} items`);

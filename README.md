@@ -28,18 +28,20 @@ Open `index.html` directly in Chrome.
 node scripts/generate-intentions-binaries.mjs ../smartrosary-web-installer/intentions
 ```
 
-The generator reads every `packages/*.json` definition from
-`/Users/lech/Projects/smartrosary-intentions` by default. Use
-`SMARTROSARY_INTENTIONS_DIR=/path/to/smartrosary-intentions` to generate from
-another checkout.
+The generator reads single presets from `intentions/*.json` and multi-entry
+packages from `packages/*.json` in `/Users/lech/Projects/smartrosary-intentions`
+by default. Use `SMARTROSARY_INTENTIONS_DIR=/path/to/smartrosary-intentions` to
+generate from another checkout. It writes each `.bin` plus
+`intentions/manifest.json` for dynamic app and installer package lists.
 
 ## Generate Editor Presets
 
 The in-page preset selector reads `intentions-presets.js`, generated from the
-same canonical package definitions:
+same canonical single-preset and package definitions:
 
 ```sh
 node scripts/generate-intentions-presets.mjs
 ```
 
-Regenerate this file whenever `smartrosary-intentions/packages/*.json` changes.
+Regenerate this file whenever `smartrosary-intentions/intentions/*.json` or
+`smartrosary-intentions/packages/*.json` changes.
